@@ -10,6 +10,7 @@ const compression = require('compression');
 
 const ApiError = require('./utils/ApiError');
 const globalError = require('./middlwares/errorMiddleware');
+const { webhookCheckout } = require('./services/orderService')
 
 // ce chemin fait reference au index.js 
 const mountRoutes = require('./routes');
@@ -30,7 +31,8 @@ app.options('*', cors())
 // compression permet de compresser tout les responses pour augmenter la performence de l'application
 app.use(compression())
 
-// const { response } = require('express');
+// checkout webhook (Stripe)
+app.post('/webhook-checkout', express.raw({ type: 'application/json' }), webhookCheckout);
 
 // Connect with DB
 dbConnection();
