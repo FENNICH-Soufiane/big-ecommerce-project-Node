@@ -131,7 +131,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     line_items: [{
       price_data: {
         currency: 'usd',
-        unit_amount: totalOrderPrice * 100,//je pense que *100 car price etait en decimal example 0.99 en multiplie par 100 pour que le prix soit 99
+        unit_amount: totalOrderPrice / 100,//je pense que *100 car price etait en decimal example 0.99 en multiplie par 100 pour que le prix soit 99
         product_data: {
           name: req.user.name,
           // description: 'Comfortable cotton t-shirt',
@@ -153,6 +153,10 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: 'success', session })
 });
 
+createCardOrder = (session) => {
+
+}
+
 // code for add functionality of stripe payment
 // https://dashboard.stripe.com/test/webhooks/create?events=checkout.session.completed
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
@@ -166,8 +170,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   if(event.type === 'checkout.session.completed') {
-    console.log('Create Order Here ...');
-    console.log(event.data.object.client_reference_id);
-    console.log('ok');
+    // Create order
+    createCardOrder(event.data.object);
   }
 });
