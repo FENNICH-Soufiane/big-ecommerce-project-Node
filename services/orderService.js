@@ -157,20 +157,20 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 //   const cartId = session.client_reference_id;
 // }
 
-// // code for add functionality of stripe payment
-// // https://dashboard.stripe.com/test/webhooks/create?events=checkout.session.completed
-// exports.webhookCheckout = asyncHandler(async (req, res, next) => {
-//   const sig = req.headers['stripe-signature'];
+// code for add functionality of stripe payment
+// https://dashboard.stripe.com/test/webhooks/create?events=checkout.session.completed
+exports.webhookCheckout = asyncHandler(async (req, res, next) => {
+  const sig = req.headers['stripe-signature'];
 
-//   let event;
+  let event;
 
-//   try {
-//     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-//   } catch (err) {
-//     return res.status(400).send(`Webhook Error: ${err.message}`);
-//   }
-//   if(event.type === 'checkout.session.completed') {
-//     // Create order
-//     createCardOrder(event.data.object);
-//   }
-// });
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+  if(event.type === 'checkout.session.completed') {
+    // Create order
+    // createCardOrder(event.data.object);
+  }
+});
