@@ -107,6 +107,9 @@ exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: updatedOrder });
 });
 
+
+// Code for create order for online paiement with stripe
+
 // @desc    Get checkout session from stripe and send it as a response
 // @route   PUT /api/v1/orders/checkout-session/:cartId
 // @access  Protect/User
@@ -154,7 +157,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: 'success', session })
 });
 
-// Code for create order
+
 const createCardOrder = async (session) => {
   const cartId = session.client_reference_id;
   const shippingAddress = session.metadata;
@@ -189,8 +192,9 @@ const createCardOrder = async (session) => {
 
 }
 
-
 // https://dashboard.stripe.com/test/webhooks/create?events=checkout.session.completed
+
+// bind with server.js
 
 // @desc    This webhook will run when stripe payment success paid
 // @route   POST /webhook-checkout
@@ -208,7 +212,7 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   if (event.type === 'checkout.session.completed') {
     // Create order
     createCardOrder(event.data.object);
-    console.log('Order created');
+    // console.log('Order created');// see in console of render
   }
 
   res.status(200).json({ recieved: true });
