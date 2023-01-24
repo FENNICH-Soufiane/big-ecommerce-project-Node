@@ -131,7 +131,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     line_items: [{
       price_data: {
         currency: 'usd',
-        unit_amount: totalOrderPrice * 100,//je pense que *100 car price etait en decimal example 0.99 en multiplie par 100 pour que le prix soit 99
+        unit_amount: totalOrderPrice / 100,//je pense que *100 car price etait en decimal example 0.99 en multiplie par 100 pour que le prix soit 99
         product_data: {
           name: req.user.name,
           // description: 'Comfortable cotton t-shirt',
