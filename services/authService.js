@@ -127,6 +127,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       new ApiError(`There is no user with that email ${req.body.email}`, 404)
     );
   }
+
+
   // 2) If user exist, Generate hash reset random 6 digits and is in db
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
   const hashedResetCode = crypto
