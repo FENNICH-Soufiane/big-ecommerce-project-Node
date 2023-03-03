@@ -16,6 +16,7 @@ const sendEmail = async (options) => {
   const mailOpts = {
     from: 'E-shop app <test.web.app.2022.05.02@gmail.com>',
     to: options.email,
+    // to: 'fennich0011soufiane@gmail.com',
     subject: options.subject,
     text: options.message
   }
