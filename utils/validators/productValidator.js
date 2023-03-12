@@ -38,12 +38,13 @@ exports.createProductValidator = [
     }),
   check('colors')
     .optional()
-    .isArray().withMessage('availableColors should be array of string'),
+    // .isArray()
+    .withMessage('availableColors should be array of string'),
   check('imageCover')
     .notEmpty().withMessage('Product imageCover is required'),
   check('images')
     .optional()
-    // .isArray()
+    .isArray()
     .withMessage('images should be array of string'),
   check('category')
     .notEmpty().withMessage('Product must be belong to a category')
