@@ -43,7 +43,8 @@ exports.createProductValidator = [
     .notEmpty().withMessage('Product imageCover is required'),
   check('images')
     .optional()
-    .isArray().withMessage('images should be array of string'),
+    // .isArray()
+    .withMessage('images should be array of string'),
   check('category')
     .notEmpty().withMessage('Product must be belong to a category')
     .isMongoId().withMessage('Invalid ID formate')
@@ -58,45 +59,76 @@ exports.createProductValidator = [
       })
     )
   ,
+  // check('subcategories')
+  //   .optional()
+  //   .isMongoId().withMessage('Invalid ID formate')
+  //   // ce custom verifie si les (le) subcategory id envoyer exist deja dans la base de données
+  //   .custom((subcategoriesIds) =>
+  //     SubCategory.find({ _id: { $exists: true, $in: subcategoriesIds } })
+  //       .then((result) => {
+  //         // check if length of result equal length of subcategoriesIds
+  //         if (result.length < 1 || result.length !== subcategoriesIds.length) {
+  //           return Promise.reject(
+  //             new Error('Invalid subcategoriesIds')
+  //           );
+  //         }
+  //       })
+  //   )
+  //   // @desc ce custom verifie si les (le) subcategory id envoyer appartient vraiment à une categorie
+  //   // envoyer les subcategories qui appartient au { category: req.body.category }
+  //   .custom((val, { req }) =>
+  //     SubCategory.find({ category: req.body.category })
+  //       .then((subcategories) => {
+  //         // renvoyer les subcategory de { category: req.body.category }
+  //         const subCategoriesIdsInDB = [];
+  //         subcategories.forEach((subcategory) => {
+  //           subCategoriesIdsInDB.push(subcategory._id.toString());
+  //         });
+  //         // @desc val sont les ids reçu du subcategory reçu du body
+  //         // const checker = val.every((v) => subCategoriesIdsInDB.includes(v)); 👇🏻// send true if subcategoriesIds exist in the same category
+
+  //         if (!val.every((v) => subCategoriesIdsInDB.includes(v))) {//            👈🏻
+  //           return Promise.reject(new Error('subcategories not belong to category'));
+  //         }
+
+  //         // ces deux bloc de code sont égaux ☝🏻👇🏻
+
+  //         // const checker = (target, arr) =>  target.every((v) => arr.includes(v));
+  //         // if(!checker(val, subCategoriesIdsInDB)) {
+  //         //   return Promise.reject(new Error('subcategories not belong to category'));
+  //         // }
+  //       })
+  //   )
+
   check('subcategories')
     .optional()
-    .isMongoId().withMessage('Invalid ID formate')
-    // ce custom verifie si les (le) subcategory id envoyer exist deja dans la base de données
+    .isMongoId()
+    .withMessage('Invalid ID formate')
     .custom((subcategoriesIds) =>
-      SubCategory.find({ _id: { $exists: true, $in: subcategoriesIds } })
-        .then((result) => {
-          // check if length of result equal length of subcategoriesIds
+      SubCategory.find({ _id: { $exists: true, $in: subcategoriesIds } }).then(
+        (result) => {
           if (result.length < 1 || result.length !== subcategoriesIds.length) {
+            return Promise.reject(new Error(`Invalid subcategories Ids`));
+          }
+        }
+      )
+    )
+    .custom((val, { req }) =>
+      SubCategory.find({ category: req.body.category }).then(
+        (subcategories) => {
+          const subCategoriesIdsInDB = [];
+          subcategories.forEach((subCategory) => {
+            subCategoriesIdsInDB.push(subCategory._id.toString());
+          });
+          // check if subcategories ids in db include subcategories in req.body (true)
+          const checker = (target, arr) => target.every((v) => arr.includes(v));
+          if (!checker(val, subCategoriesIdsInDB)) {
             return Promise.reject(
-              new Error('Invalid subcategoriesIds')
+              new Error(`subcategories not belong to category`)
             );
           }
-        })
-    )
-    // @desc ce custom verifie si les (le) subcategory id envoyer appartient vraiment à une categorie
-    // envoyer les subcategories qui appartient au { category: req.body.category }
-    .custom((val, { req }) =>
-      SubCategory.find({ category: req.body.category })
-        .then((subcategories) => {
-          // renvoyer les subcategory de { category: req.body.category }
-          const subCategoriesIdsInDB = [];
-          subcategories.forEach((subcategory) => {
-            subCategoriesIdsInDB.push(subcategory._id.toString());
-          });
-          // @desc val sont les ids reçu du subcategory reçu du body
-          // const checker = val.every((v) => subCategoriesIdsInDB.includes(v)); 👇🏻// send true if subcategoriesIds exist in the same category
-
-          if (!val.every((v) => subCategoriesIdsInDB.includes(v))) {//            👈🏻
-            return Promise.reject(new Error('subcategories not belong to category'));
-          }
-
-          // ces deux bloc de code sont égaux ☝🏻👇🏻
-
-          // const checker = (target, arr) =>  target.every((v) => arr.includes(v));
-          // if(!checker(val, subCategoriesIdsInDB)) {
-          //   return Promise.reject(new Error('subcategories not belong to category'));
-          // }
-        })
+        }
+      )
     )
   ,
   check('brand')
