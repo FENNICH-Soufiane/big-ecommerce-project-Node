@@ -38,9 +38,9 @@ exports.createProductValidator = [
     }),
   check('colors')
     .optional()
-    // .isArray()
-    // .withMessage('availableColors should be array of string')
-    ,
+  // .isArray()
+  // .withMessage('availableColors should be array of string')
+  ,
   check('imageCover')
     .notEmpty().withMessage('Product imageCover is required'),
   check('images')
@@ -123,12 +123,19 @@ exports.createProductValidator = [
             subCategoriesIdsInDB.push(subCategory._id.toString());
           });
           // check if subcategories ids in db include subcategories in req.body (true)
-          const checker = (target, arr) => target.every((v) => arr.includes(v));
-          if (!checker(val, subCategoriesIdsInDB)) {
-            return Promise.reject(
-              new Error(`subcategories not belong to category`)
-            );
+          // const checker = (target, arr) => target.every((v) => arr.includes(v));
+          // if (!checker(val, subCategoriesIdsInDB)) {
+          //   return Promise.reject(
+          //     new Error(`subcategories not belong to category`)
+          //   );
+          // }
+
+          
+
+          if (!val.every((v) => subCategoriesIdsInDB.includes(v))) {//            👈🏻
+            return Promise.reject(new Error('subcategories not belong to category'));
           }
+
         }
       )
     )
