@@ -39,7 +39,8 @@ exports.createProductValidator = [
   check('colors')
     .optional()
     // .isArray()
-    .withMessage('availableColors should be array of string'),
+    // .withMessage('availableColors should be array of string')
+    ,
   check('imageCover')
     .notEmpty().withMessage('Product imageCover is required'),
   check('images')
@@ -131,7 +132,7 @@ exports.createProductValidator = [
         }
       )
     )
-    
+
   ,
   check('brand')
     .optional().isMongoId().withMessage('Invalid ID formate'),
