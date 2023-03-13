@@ -109,8 +109,7 @@ exports.createProductValidator = [
     .custom((subcategoriesIds) =>
       SubCategory.find({ _id: { $exists: true, $in: subcategoriesIds } }).then(
         (result) => {
-          // if (result.length < 1 || result.length !== subcategoriesIds.length) {
-            if (result.length < 1) {
+          if (result.length < 1 || result.length !== subcategoriesIds.length) {
             return Promise.reject(new Error(`Invalid subcategories Ids`));
           }
         }
