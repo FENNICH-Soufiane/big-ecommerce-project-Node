@@ -101,7 +101,7 @@ exports.createProductValidator = [
   //         // }
   //       })
   //   )
-
+// 
   check('subcategories')
     .optional()
     .isMongoId()
