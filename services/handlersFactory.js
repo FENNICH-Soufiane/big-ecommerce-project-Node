@@ -79,7 +79,8 @@ exports.getAll = (Model, modelName = '') => asyncHandler(async (req, res) => {
     filter = req.filterObj;
   }
   const documentsCounts = await Model.countDocuments();
-  const apiFeatures = new ApiFeatures(Model.find(filter), req.query)// 👈🏻on doit supprimer find()
+  // const apiFeatures = new ApiFeatures(Model.find(filter), req.query)// 👈🏻on doit supprimer find()
+  const apiFeatures = new ApiFeatures(Model, req.query)// 👈🏻on doit supprimer find()
     .filter()
     .sort()
     .limitFields()
