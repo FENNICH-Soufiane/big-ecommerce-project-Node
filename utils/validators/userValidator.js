@@ -82,8 +82,8 @@ exports.updateUserValidator = [
       return true;
     }),
   check('email')
-    .notEmpty()
-    .withMessage('Email required')
+    // .notEmpty()
+    // .withMessage('Email required')
     .isEmail()
     .withMessage('Invalid email address')
     .custom((val) =>
