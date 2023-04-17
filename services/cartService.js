@@ -89,12 +89,12 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findOne({ cartOwner: req.user._id })
     .populate({
-      path: 'products',
+      path: 'product',
       select: 'title imageCover ratingsAverage brand category ',
       populate: { path: 'brand', select: 'name -_id', model: 'Brand' },
     })
     .populate({
-      path: 'products',
+      path: 'product',
       select: 'title imageCover ratingsAverage brand category',
       populate: { path: 'category', select: 'name -_id', model: 'Category' },
     });
