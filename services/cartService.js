@@ -64,21 +64,52 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
   })
 });
 
+// ---------------------------------------------------------------------------
+
 // @desc    Get logged user cart
 // @route   GET /api/v1/cart
 // @access  Private/User
+// exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
+//   // appeler le cart de l'utilisateur inscrit
+//   const cart = await Cart.findOne({ user: req.user._id });
+//   // si il n'y a pas de cart en return une erreur
+//   if (!cart) {
+//     return next(
+//       new ApiError(`There is no cart for this user id: ${req.user._id}`, 404)
+//     );
+//   }
+
+//   res.status(200).json({ status: "success", numOfCartItems: cart.cartItems.length, data: cart })
+// })
+
+// ---------------------------------------------------------------------------
+// @desc      Get logged user cart
+// @route     GET /api/v1/cart
+// @access    Private/User
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
-  // appeler le cart de l'utilisateur inscrit
-  const cart = await Cart.findOne({ user: req.user._id });
-  // si il n'y a pas de cart en return une erreur
+  const cart = await Cart.findOne({ cartOwner: req.user._id })
+    .populate({
+      path: 'products.product',
+      select: 'title imageCover ratingsAverage brand category ',
+      populate: { path: 'brand', select: 'name -_id', model: 'Brand' },
+    })
+    .populate({
+      path: 'products.product',
+      select: 'title imageCover ratingsAverage brand category',
+      populate: { path: 'category', select: 'name -_id', model: 'Category' },
+    });
+
   if (!cart) {
     return next(
-      new ApiError(`There is no cart for this user id: ${req.user._id}`, 404)
+      new ApiError(`No cart exist for this user: ${req.user._id}`, 404)
     );
   }
-
-  res.status(200).json({ status: "success", numOfCartItems: cart.cartItems.length, data: cart })
-})
+  return res.status(200).json({
+    status: 'success',
+    numOfCartItems: cart.products.length,
+    data: cart,
+  });
+});
 
 // @desc    Remove specific cart item (on la defnir comme update cart or delete cart)
 // @route   DELETE /api/v1/cart/:itemId
