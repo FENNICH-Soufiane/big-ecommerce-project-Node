@@ -62,17 +62,3 @@ exports.getLoggedUserAddresses = asyncHandler(async (req, res, next) => {
     data: user.addresses
   })
 })
-
-// @desc      Get Specific address from addresses list
-// @route     Get /api/v1/addresses/:addressId
-// @access    Private/User
-exports.getAddress = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id);
-
-  const address = user.addresses.id(req.params.addressId);
-
-  return res.status(200).json({
-    status: 'success',
-    data: address,
-  });
-});
