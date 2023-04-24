@@ -21,7 +21,6 @@ router.route('/')
 router.delete('/:addressId', removeAddress)
 
 
-router.route('/:addressId')
-  .get(getAddress);
+
 
 module.exports = router;
