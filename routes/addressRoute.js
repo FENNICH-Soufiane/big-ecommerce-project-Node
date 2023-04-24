@@ -5,7 +5,8 @@ const authService = require('../services/authService');
 const {
   addAddress,
   removeAddress,
-  getLoggedUserAddresses
+  getLoggedUserAddresses,
+  getAddress
 } = require('../services/addressService');
 // const { createWishlistValidator } = require('../utils/validators/wishlistValidator');
 
@@ -18,5 +19,6 @@ router.route('/')
   .post(addAddress)
   .get(getLoggedUserAddresses);
 router.delete('/:addressId', removeAddress)
+router.get('/:addressId', getAddress)
 
 module.exports = router;
